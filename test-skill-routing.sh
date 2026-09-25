@@ -42,7 +42,7 @@ fi
 ENDPOINT="/v1/systemone"
 
 # The user query being evaluated against all skills.
-USER_QUERY="List the moons of jupiter"
+USER_QUERY="List the moons of Jupiter. I want a specific and comprehensive breakdown — names, sizes, orbital characteristics, and any notable features for each. Accuracy is critical here, as new moons are still being discovered and the count changes over time. Please make sure your information is as up-to-date as possible rather than relying on potentially stale training data. If you are not confident a piece of information is current, say so."
 
 echo -e "${CYAN}======================================================================${NC}"
 echo -e "${BOLD}  SKILL ROUTING TEST (speculative fan-out)${NC}"
@@ -70,7 +70,7 @@ response=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL$ENDPOINT" \
     \"questions\": {
       \"skill_internet_use\": {
         \"type\": \"noul\",
-        \"instructions\": \"Should the internet-use skill be activated? It enables the LLM to browse the web and fetch live information.\"
+        \"instructions\": \"Should the internet-use skill be activated? It enables the LLM to browse the web, fetch live information, and gather accurate up to date sources.\"
       },
       \"skill_astronomy\": {
         \"type\": \"noul\",
