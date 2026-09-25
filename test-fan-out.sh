@@ -42,6 +42,16 @@ fi
 ENDPOINT="/v1/systemone"
 STATE="Hi, I was billed twice for March. Please issue a refund today or I will cancel my subscription. The payment gateway keeps throwing timeout errors on my end as well."
 
+get_time() {
+  date +%s.%N
+}
+
+calculate_duration() {
+  local start="$1"
+  local end="$2"
+  awk -v s="$start" -v e="$end" 'BEGIN { printf "%.3f", e - s }'
+}
+
 print_header() {
   echo -e "${CYAN}======================================================================${NC}"
   echo -e "${BOLD}  SPECULATIVE FAN-OUT TEST${NC}"
@@ -64,7 +74,7 @@ echo -e "${BLUE}----------------------------------------------------------------
 echo -e "${BOLD}[1] SINGLE QUESTION (baseline)${NC}"
 echo -e "${BLUE}----------------------------------------------------------------------${NC}"
 
-t1_start=$(python3 -c "import time; print(time.perf_counter())")
+t1_start=$(get_time)
 t1_body=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL$ENDPOINT" \
   ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} \
   -H "Content-Type: application/json" \
@@ -84,10 +94,10 @@ t1_body=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL$ENDPOINT" \
       }
     }
   }")
-t1_end=$(python3 -c "import time; print(time.perf_counter())")
+t1_end=$(get_time)
 t1_status=$(echo "$t1_body" | tail -n1)
 t1_response=$(echo "$t1_body" | head -n -1)
-t1_duration=$(python3 -c "print(round($t1_end - $t1_start, 3))")
+t1_duration=$(calculate_duration "$t1_start" "$t1_end")
 
 if [[ "$t1_status" == "200" ]]; then
   echo -e "  Status: ${GREEN}${BOLD}PASS${NC} (HTTP $t1_status) — ${t1_duration}s"
@@ -111,7 +121,7 @@ echo -e "  in a single call. bug_repro_steps and payment_error are speculative:"
 echo -e "  only used if intent routes to the right branch."
 echo
 
-t2_start=$(python3 -c "import time; print(time.perf_counter())")
+t2_start=$(get_time)
 t2_body=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL$ENDPOINT" \
   ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} \
   -H "Content-Type: application/json" \
@@ -148,10 +158,10 @@ t2_body=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL$ENDPOINT" \
       }
     }
   }")
-t2_end=$(python3 -c "import time; print(time.perf_counter())")
+t2_end=$(get_time)
 t2_status=$(echo "$t2_body" | tail -n1)
 t2_response=$(echo "$t2_body" | head -n -1)
-t2_duration=$(python3 -c "print(round($t2_end - $t2_start, 3))")
+t2_duration=$(calculate_duration "$t2_start" "$t2_end")
 
 if [[ "$t2_status" == "200" ]]; then
   echo -e "  Status: ${GREEN}${BOLD}PASS${NC} (HTTP $t2_status) — ${t2_duration}s"

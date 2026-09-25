@@ -61,36 +61,55 @@ echo
 
 THRESHOLD="0.5"
 
-# Write payload via python to safely handle non-ASCII characters (em dashes etc.)
-PAYLOAD_FILE=$(mktemp /tmp/laya-request-XXXXXX.json)
-python3 -c "
-import json, sys
-state = sys.argv[1]
-payload = {
-  'model': 'multilingual',
-  'state': state,
-  'questions': {
-    'skill_internet_use':       {'type': 'noul', 'instructions': 'Apakah skill penggunaan internet perlu diaktifkan? Skill ini memungkinkan LLM menjelajahi web, mengambil informasi terkini, dan mengumpulkan sumber yang akurat dan up-to-date.'},
-    'skill_astronomy':          {'type': 'noul', 'instructions': 'Apakah skill astronomi atau ilmu antariksa perlu diaktifkan? Skill ini memberikan pengetahuan mendalam tentang planet, bulan, bintang, dan tata surya.'},
-    'skill_code_interpreter':   {'type': 'noul', 'instructions': 'Apakah skill interpreter kode atau analisis data perlu diaktifkan? Skill ini memungkinkan LLM menulis dan mengeksekusi kode.'},
-    'skill_image_generation':   {'type': 'noul', 'instructions': 'Apakah skill pembuatan gambar perlu diaktifkan? Skill ini memungkinkan LLM menghasilkan karya seni visual atau diagram.'},
-    'skill_document_summariser':{'type': 'noul', 'instructions': 'Apakah skill ringkasan dokumen perlu diaktifkan? Skill ini mengekstrak poin-poin penting dari teks panjang atau file yang diunggah.'},
-    'skill_translation':        {'type': 'noul', 'instructions': 'Apakah skill terjemahan bahasa perlu diaktifkan? Skill ini mengonversi teks antar bahasa manusia.'},
-    'skill_calendar_scheduling':{'type': 'noul', 'instructions': 'Apakah skill kalender atau penjadwalan perlu diaktifkan? Skill ini mengelola acara, pengingat, dan perencanaan berbasis waktu.'},
-    'skill_finance_analysis':   {'type': 'noul', 'instructions': 'Apakah skill analisis keuangan atau pasar saham perlu diaktifkan? Skill ini menginterpretasikan data keuangan dan tren pasar.'},
-    'skill_recipe_generator':   {'type': 'noul', 'instructions': 'Apakah skill pembuatan resep perlu diaktifkan? Skill ini menyarankan ide masakan dan instruksi memasak.'},
-    'skill_math_solver':        {'type': 'noul', 'instructions': 'Apakah skill matematika atau pemecahan persamaan perlu diaktifkan? Skill ini menangani matematika simbolik, pembuktian, dan komputasi numerik.'},
-  }
-}
-print(json.dumps(payload, ensure_ascii=False))
-" "$USER_QUERY" > "$PAYLOAD_FILE"
-
 response=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL$ENDPOINT" \
   ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} \
   -H "Content-Type: application/json" \
-  -d "@$PAYLOAD_FILE")
-
-rm -f "$PAYLOAD_FILE"
+  -d "{
+    \"model\": \"multilingual\",
+    \"state\": \"$USER_QUERY\",
+    \"questions\": {
+      \"skill_internet_use\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill penggunaan internet perlu diaktifkan? Skill ini memungkinkan LLM menjelajahi web, mengambil informasi terkini, dan mengumpulkan sumber yang akurat dan up-to-date.\"
+      },
+      \"skill_astronomy\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill astronomi atau ilmu antariksa perlu diaktifkan? Skill ini memberikan pengetahuan mendalam tentang planet, bulan, bintang, dan tata surya.\"
+      },
+      \"skill_code_interpreter\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill interpreter kode atau analisis data perlu diaktifkan? Skill ini memungkinkan LLM menulis dan mengeksekusi kode.\"
+      },
+      \"skill_image_generation\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill pembuatan gambar perlu diaktifkan? Skill ini memungkinkan LLM menghasilkan karya seni visual atau diagram.\"
+      },
+      \"skill_document_summariser\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill ringkasan dokumen perlu diaktifkan? Skill ini mengekstrak poin-poin penting dari teks panjang atau file yang diunggah.\"
+      },
+      \"skill_translation\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill terjemahan bahasa perlu diaktifkan? Skill ini mengonversi teks antar bahasa manusia.\"
+      },
+      \"skill_calendar_scheduling\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill kalender atau penjadwalan perlu diaktifkan? Skill ini mengelola acara, pengingat, dan perencanaan berbasis waktu.\"
+      },
+      \"skill_finance_analysis\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill analisis keuangan atau pasar saham perlu diaktifkan? Skill ini menginterpretasikan data keuangan dan tren pasar.\"
+      },
+      \"skill_recipe_generator\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill pembuatan resep perlu diaktifkan? Skill ini menyarankan ide masakan dan instruksi memasak.\"
+      },
+      \"skill_math_solver\": {
+        \"type\": \"noul\",
+        \"instructions\": \"Apakah skill matematika atau pemecahan persamaan perlu diaktifkan? Skill ini menangani matematika simbolik, pembuktian, dan komputasi numerik.\"
+      }
+    }
+  }")
 
 status=$(echo "$response" | tail -n1)
 body=$(echo "$response" | head -n -1)
@@ -110,8 +129,8 @@ echo "$body" | jq -r '
   "\(.key) \(.value.noul)"
 ' | sort -k2 -rn | while read -r skill score; do
   padded=$(printf "%-30s" "$skill")
-  bar_len=$(python3 -c "print(int(float('$score') * 40))")
-  bar=$(python3 -c "print('█' * $bar_len)")
+  bar_len=$(awk -v s="$score" 'BEGIN { printf "%d", s * 40 }')
+  bar=$(awk -v n="$bar_len" 'BEGIN { for (i = 0; i < n; i++) printf "█" }')
   printf "  %s  %.3f  %s\n" "$padded" "$score" "$bar"
 done
 

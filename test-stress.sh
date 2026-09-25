@@ -75,7 +75,7 @@ get_time() {
 calculate_duration() {
   local start="$1"
   local end="$2"
-  python3 -c "print(round($end - $start, 3))"
+  awk -v s="$start" -v e="$end" 'BEGIN { printf "%.3f", e - s }'
 }
 
 print_header() {
@@ -118,7 +118,7 @@ done
 
 m1_end=$(get_time)
 m1_duration=$(calculate_duration "$m1_start" "$m1_end")
-m1_avg=$(python3 -c "print(round($m1_duration / $NUM_REQUESTS, 3))")
+m1_avg=$(awk -v d="$m1_duration" -v n="$NUM_REQUESTS" 'BEGIN { printf "%.3f", d / n }')
 
 echo
 echo -e "  Success Rate: ${BOLD}$m1_success / $NUM_REQUESTS${NC}"
@@ -243,7 +243,7 @@ done < <( "${cmd[@]}" )
 
 m3_end=$(get_time)
 m3_duration=$(calculate_duration "$m3_start" "$m3_end")
-m3_avg=$(python3 -c "print(round($m3_duration / $NUM_REQUESTS, 3))")
+m3_avg=$(awk -v d="$m3_duration" -v n="$NUM_REQUESTS" 'BEGIN { printf "%.3f", d / n }')
 
 echo "  Chained request execution complete."
 echo

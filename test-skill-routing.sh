@@ -129,8 +129,8 @@ echo "$body" | jq -r '
   "\(.key) \(.value.noul)"
 ' | sort -k2 -rn | while read -r skill score; do
   padded=$(printf "%-30s" "$skill")
-  bar_len=$(python3 -c "print(int(float('$score') * 40))")
-  bar=$(python3 -c "print('█' * $bar_len)")
+  bar_len=$(awk -v s="$score" 'BEGIN { printf "%d", s * 40 }')
+  bar=$(awk -v n="$bar_len" 'BEGIN { for (i = 0; i < n; i++) printf "█" }')
   printf "  %s  %.3f  %s\n" "$padded" "$score" "$bar"
 done
 
