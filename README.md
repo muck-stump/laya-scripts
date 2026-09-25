@@ -37,3 +37,10 @@ Thus the LLM delegates responsibility of skill selection. pressumably this frees
 In principle this extends to an infinite number of skills and context bloat never happens, you just wait for the system-one model a little bit more.
 
 it behaves kind of weirdly with the example i have set which i guess elucidates that typed output doesn't guarantee correctness
+
+## sdk_compatibility.py
+
+Uses the typesafe SDK (which originally points at the jev API endpoint) but redirected to point at values determined by `.env`. 
+Its an example of triaging tickets to a department. 
+This demonstrates compatibility with any python project written for jev based on this SDK.
+Run using `uv run python sdk_compatibility.py`
