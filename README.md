@@ -36,7 +36,9 @@ the system-one model makes the choice (in under 200ms) and the skills are loaded
 Thus the LLM delegates responsibility of skill selection. pressumably this frees context because skills are only in context when actually loaded. 
 In principle this extends to an infinite number of skills and context bloat never happens, you just wait for the system-one model a little bit more.
 
-it behaves kind of weirdly with the example i have set which i guess elucidates that typed output doesn't guarantee correctness
+## test-skill-routing-id.sh
+
+Same as above but in a non-english language to test multilingual capability of model. 
 
 ## sdk_compatibility.py
 
