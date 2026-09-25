@@ -11,10 +11,10 @@ fi
 
 source "$ENV_FILE"
 
-: "${VON_ROUTE:?VON_ROUTE must be set in .env}"
-: "${VON_TOKEN:?VON_TOKEN must be set in .env}"
+: "${ENDPOINT:?ENDPOINT must be set in .env}"
+: "${API_KEY:?API_KEY must be set in .env}"
 
-BASE_URL="https://$VON_ROUTE"
+BASE_URL="https://$ENDPOINT"
 AUTH_PATH="/v1/systemone"
 PASS=0
 FAIL=0
@@ -37,7 +37,7 @@ fi
 
 print_header() {
   echo -e "${CYAN}======================================================================${NC}"
-  echo -e "${BOLD}  VON-SERVER AUTHENTICATION TESTS${NC}"
+  echo -e "${BOLD}  JEV-LIKE-SERVER AUTHENTICATION TESTS${NC}"
   echo -e "${CYAN}======================================================================${NC}"
   echo -e "Target URL: ${BOLD}$BASE_URL${NC}"
   echo
@@ -109,7 +109,7 @@ echo
 print_section "4" "Protected Path - Correct Token"
 print_test_details "$AUTH_PATH" "Valid Bearer Token from .env" "200 OK or 422 Unprocessable Entity"
 status=$(curl -s --max-time 10 -o /dev/null -w "%{http_code}" -X POST \
-  -H "Content-Type: application/json" -H "Authorization: Bearer $VON_TOKEN" \
+  -H "Content-Type: application/json" -H "Authorization: Bearer $API_KEY" \
   -d '{"model":"von-latest","state":"test","questions":{"q":{"type":"noul","instructions":"test?"}}}' \
   "$BASE_URL$AUTH_PATH")
 check "200" "$status" "auth accepted"

@@ -11,8 +11,8 @@ fi
 # Configuration with defaults
 NUM_REQUESTS="${1:-5}" # Number of requests, defaults to 5. Can be passed as first argument.
 
-if [[ -n "${VON_ROUTE:-}" ]]; then
-  BASE_URL="https://${VON_ROUTE}"
+if [[ -n "${ENDPOINT:-}" ]]; then
+  BASE_URL="https://${ENDPOINT}"
 else
   HOST="${VON_HOST:-127.0.0.1}"
   PORT="${VON_PORT:-8000}"
@@ -22,8 +22,8 @@ fi
 AUTH_PATH="/v1/systemone"
 
 AUTH_HEADER=()
-if [[ -n "${VON_TOKEN:-}" ]]; then
-  AUTH_HEADER=(-H "Authorization: Bearer ${VON_TOKEN}")
+if [[ -n "${API_KEY:-}" ]]; then
+  AUTH_HEADER=(-H "Authorization: Bearer ${API_KEY}")
 fi
 
 if [[ -t 1 ]]; then

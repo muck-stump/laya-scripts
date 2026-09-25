@@ -8,8 +8,8 @@ if [[ -f "$ENV_FILE" ]]; then
   source "$ENV_FILE"
 fi
 
-if [[ -n "${VON_ROUTE:-}" ]]; then
-  BASE_URL="https://${VON_ROUTE}"
+if [[ -n "${ENDPOINT:-}" ]]; then
+  BASE_URL="https://${ENDPOINT}"
 else
   HOST="${VON_HOST:-127.0.0.1}"
   PORT="${VON_PORT:-8000}"
@@ -17,8 +17,8 @@ else
 fi
 
 AUTH_HEADER=()
-if [[ -n "${VON_TOKEN:-}" ]]; then
-  AUTH_HEADER=(-H "Authorization: Bearer ${VON_TOKEN}")
+if [[ -n "${API_KEY:-}" ]]; then
+  AUTH_HEADER=(-H "Authorization: Bearer ${API_KEY}")
 fi
 
 if [[ -t 1 ]]; then
