@@ -11,8 +11,8 @@ fi
 if [[ -n "${ENDPOINT:-}" ]]; then
   BASE_URL="https://${ENDPOINT}"
 else
-  HOST="${VON_HOST:-127.0.0.1}"
-  PORT="${VON_PORT:-8000}"
+  HOST="${LAYA_HOST:-127.0.0.1}"
+  PORT="${LAYA_PORT:-8000}"
   BASE_URL="http://${HOST}:${PORT}"
 fi
 
@@ -22,7 +22,7 @@ if [[ -n "${API_KEY:-}" ]]; then
 fi
 
 echo "========================================="
-echo "Testing Von Server at: ${BASE_URL}"
+echo "Testing Laya Server at: ${BASE_URL}"
 echo "========================================="
 
 echo ""
@@ -35,7 +35,7 @@ curl -s -f -X POST "${BASE_URL}/v1/systemone" \
   ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "von-latest",
+    "model": "english",
     "state": "Payment gateway reports timeout on charge authorizations. Urgent.",
     "questions": {
       "intent": {

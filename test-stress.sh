@@ -14,8 +14,8 @@ NUM_REQUESTS="${1:-5}" # Number of requests, defaults to 5. Can be passed as fir
 if [[ -n "${ENDPOINT:-}" ]]; then
   BASE_URL="https://${ENDPOINT}"
 else
-  HOST="${VON_HOST:-127.0.0.1}"
-  PORT="${VON_PORT:-8000}"
+  HOST="${LAYA_HOST:-127.0.0.1}"
+  PORT="${LAYA_PORT:-8000}"
   BASE_URL="http://${HOST}:${PORT}"
 fi
 
@@ -45,7 +45,7 @@ else
 fi
 
 PAYLOAD='{
-  "model": "von-latest",
+  "model": "english",
   "state": "Payment gateway reports timeout on charge authorizations. Urgent.",
   "questions": {
     "intent": {
@@ -80,7 +80,7 @@ calculate_duration() {
 
 print_header() {
   echo -e "${CYAN}======================================================================${NC}"
-  echo -e "${BOLD}  VON-SERVER STRESS & PERFORMANCE TESTS${NC}"
+  echo -e "${BOLD}  LAYA-SERVER STRESS & PERFORMANCE TESTS${NC}"
   echo -e "${CYAN}======================================================================${NC}"
   echo -e "Target URL:      ${BOLD}$BASE_URL${NC}"
   echo -e "Endpoint:        ${BOLD}$AUTH_PATH${NC}"

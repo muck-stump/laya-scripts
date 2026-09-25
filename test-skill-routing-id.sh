@@ -11,8 +11,8 @@ fi
 if [[ -n "${ENDPOINT:-}" ]]; then
   BASE_URL="https://${ENDPOINT}"
 else
-  HOST="${VON_HOST:-127.0.0.1}"
-  PORT="${VON_PORT:-8000}"
+  HOST="${LAYA_HOST:-127.0.0.1}"
+  PORT="${LAYA_PORT:-8000}"
   BASE_URL="http://${HOST}:${PORT}"
 fi
 

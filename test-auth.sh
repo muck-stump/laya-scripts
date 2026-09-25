@@ -110,7 +110,7 @@ print_section "4" "Protected Path - Correct Token"
 print_test_details "$AUTH_PATH" "Valid Bearer Token from .env" "200 OK or 422 Unprocessable Entity"
 status=$(curl -s --max-time 10 -o /dev/null -w "%{http_code}" -X POST \
   -H "Content-Type: application/json" -H "Authorization: Bearer $API_KEY" \
-  -d '{"model":"von-latest","state":"test","questions":{"q":{"type":"noul","instructions":"test?"}}}' \
+  -d '{"model":"english","state":"test","questions":{"q":{"type":"noul","instructions":"test?"}}}' \
   "$BASE_URL$AUTH_PATH")
 check "200" "$status" "auth accepted"
 echo
